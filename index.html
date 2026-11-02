@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Order Channel Performance and Market Share Analytics | SkyCity Auckland Research Paper</title>
+<meta name="description" content="Interactive research paper: how Uber Eats, DoorDash, Self-Delivery and In-Store split orders and profit across 1,696 Auckland venues.">
+<link rel="stylesheet" href="css/aurora.css"><link rel="stylesheet" href="css/paper.css"></head>
+<body><div class="stApp">
+<div class="aurora-background" aria-hidden="true"><div class="aurora-blob"></div><div class="aurora-blob"></div><div class="aurora-blob"></div></div>
+<div id="bar" aria-hidden="true"></div>
+<nav id="nav" aria-label="Paper sections"></nav>
+<main class="wrap">
+<header class="rv"><span class="hero-badge">Research paper · Unified Mentor · Project 5</span>
+<h1 class="hero-title">Order Channel Performance and Market Share Analytics</h1>
+<p class="hero-sub">How In-Store, Uber Eats, DoorDash and Self-Delivery split orders and profit across SkyCity Auckland restaurants and bars. Every figure below is computed from the dataset and every chart responds to you.</p>
+<div class="g5">
+<div class="kpi" style="--accent-g:var(--g-aurora)"><div class="l">Venues</div><div class="v" data-c="venues|i"></div><div class="s">one monthly snapshot</div></div>
+<div class="kpi" style="--accent-g:var(--g-ocean)"><div class="l">Monthly orders</div><div class="v" data-c="orders|n"></div><div class="s">all channels</div></div>
+<div class="kpi" style="--accent-g:var(--g-aurora)"><div class="l">Net profit</div><div class="v" data-c="profit|m"></div><div class="s">monthly, all channels</div></div>
+<div class="kpi" style="--accent-g:var(--g-sunset)"><div class="l">Aggregator dependence</div><div class="v" data-c="agg_os|p1"></div><div class="s">of orders, <span data-b="agg_ps|p1"></span> of profit</div></div>
+<div class="kpi" style="--accent-g:var(--g-sunset)"><div class="l">Full-service app loss</div><div class="v" data-c="fs.agg_profit|m"></div><div class="s">per month, Uber Eats + DoorDash</div></div></div></header>
+
+<section id="s1" class="rv"><h2>1. Abstract</h2>
+<p>Across <b data-b="venues|i"></b> venues and <b data-b="orders|i"></b> monthly orders, Uber Eats and DoorDash carry <b data-b="agg_os|p2"></b> of orders but generate only <b data-b="agg_ps|p2"></b> of net profit, a <b data-b="agg_margin|p2"></b> margin. In-Store and Self-Delivery carry the rest and earn <b data-b="direct_ps|p2"></b> of profit. All <b data-b="fs.venues|i"></b> Full-service venues lose money on both platforms, a combined <b data-b="fs.agg_profit|d"></b> a month.</p>
+<div class="g4"><div class="card"><h3>Geography is flat</h3><p>Channel mix is near-identical in every subregion. Cuisine, not area, drives platform dependence.</p></div>
+<div class="card"><h3>Margins diverge</h3><p>Aggregator orders earn under 1% margin; In-Store and Self-Delivery earn 23 to 27%.</p></div>
+<div class="card"><h3>The 70% rule is empty</h3><p>No venue reaches 70% on a single platform (highest <b data-b="risk.single_max|p1"></b>), so risk uses combined share.</p></div>
+<div class="card"><h3>Scenarios, not forecasts</h3><p>Growth and policy results are arithmetic on one snapshot.</p></div></div></section>
+
+<section id="s2" class="rv"><h2>2. Data and preprocessing</h2>
+<p>The pipeline turns the raw CSV into analysis-ready data in eight steps. Hover or focus a step for the detail.</p>
+<ol class="steps"><li tabindex="0"><b>Ingest</b><span>1,696 rows, 30 columns, no missing values.</span></li><li tabindex="0"><b>Align headers</b><span>InStoreOrders becomes InStoreOrdersCount; DeliveryCostPerOrder becomes DeliveryCostOrder.</span></li><li tabindex="0"><b>Alias areas</b><span>CBD becomes Central Auckland (CBD); four canonical subregions.</span></li><li tabindex="0"><b>True shares</b><span>Recomputed on MonthlyOrders so channel shares sum to 100%.</span></li><li tabindex="0"><b>Validate</b><span>Nine conservation checks, listed below.</span></li><li tabindex="0"><b>KPIs</b><span>Aggregator index, in-store reliance, diversification score, dominance.</span></li><li tabindex="0"><b>Risk tiers</b><span>Tier 1 volume concentration; Tier 2 loss on both platforms.</span></li><li tabindex="0"><b>Postprocess</b><span>Scenario terms precomputed and checked against the Python simulator.</span></li></ol>
+<div class="g2"><div><h3>Validation checks</h3><ul id="checks" class="chk"></ul></div><div><h3>Anomalies found</h3><div id="anoms"></div></div></div></section>
+
+<section id="s3" class="rv"><h2>3. Channel market share</h2>
+<div class="ctl"><div class="seg" data-k="metric" role="group" aria-label="Metric"><button data-v="orders" aria-pressed="true">Orders</button><button data-v="rev" aria-pressed="false">Revenue</button><button data-v="profit" aria-pressed="false">Net profit</button><button data-v="margin" aria-pressed="false">Margin</button></div>
+<div class="seg" data-k="view" role="group" aria-label="Channel view"><button data-v="total" aria-pressed="true">Total orders</button><button data-v="delivery" aria-pressed="false">Delivery only</button></div></div>
+<div class="g2 mid"><div id="chBars" class="bars" aria-live="polite"></div><div class="donuts"><figure><div id="dOrd"></div><figcaption>Order share</figcaption></figure><figure><div id="dPro"></div><figcaption>Profit share</figcaption></figure></div></div>
+<p class="cap">Commission runs <b data-b="comm.min|p0"></b> to <b data-b="comm.max|p0"></b> (weighted <b data-b="comm.wtd|p1"></b>), about <b data-b="comm.monthly|m"></b> a month. Self-delivery costs at most <b data-b="sdCostMax|p1"></b> of order value, below the lowest commission.</p></section>
+
+<section id="s4" class="rv"><h2>4. Geography</h2>
+<div class="ctl"><div class="seg" data-k="hm" role="group" aria-label="Heatmap metric"><button data-v="share" aria-pressed="true">Order share</button><button data-v="margin" aria-pressed="false">Net margin</button></div></div>
+<div class="scroll"><table id="heat" class="heat"></table></div>
+<div class="note">Order shares barely move between areas: Uber Eats takes about 39.6% everywhere. Margin differences by channel are far larger than differences by place.</div>
+<h3>Growth scenario</h3><label class="rng">Months ahead <output id="mo">6</output><input id="months" type="range" min="0" max="12" value="6" aria-label="Months ahead"></label>
+<div id="grow" class="bars"></div>
+<p class="cap">GrowthFactor is one month-over-month multiplier per area (CBD 0.99; North Shore 1.03; West 1.04; South 1.05). Compounded here as a scenario; the file has no monthly history to confirm it.</p></section>
+
+<section id="s5" class="rv"><h2>5. Cuisine and segment</h2>
+<div class="ctl"><div class="seg" data-k="sort" role="group" aria-label="Sort cuisines"><button data-v="aggDel" aria-pressed="true">Aggregator share</button><button data-v="sdDel" aria-pressed="false">Self-delivery share</button><button data-v="venues" aria-pressed="false">Venues</button></div>
+<span class="lg"><i style="background:#ec4899"></i>Uber Eats + DoorDash <i style="background:#4facfe"></i>Self-Delivery (of delivery orders)</span></div>
+<div id="cuis" class="bars"></div>
+<p class="cap">Within a cuisine the delivery split is identical for every venue, so venue differences come from the in-store versus delivery balance.</p>
+<h3>Net margin by segment and channel</h3><div class="lg"><i style="background:#14b8a6"></i>In-Store <i style="background:#ec4899"></i>Uber Eats <i style="background:#818cf8"></i>DoorDash <i style="background:#4facfe"></i>Self-Delivery</div>
+<div id="segs" class="g4 bars"></div>
+<p class="cap">Full-service cost structure leaves at most 20% of revenue before commission, below the lowest commission rate, so every venue loses on aggregators. Ghost Kitchens never do.</p></section>
+
+<section id="s6" class="rv"><h2>6. Dependency risk</h2>
+<p>Tier 1 flags volume concentration; Tier 2 flags losses on both platforms. Move the thresholds to see who is flagged.</p>
+<div class="g2"><label class="rng">Combined aggregator share of orders at or above <output id="o1"></output><input id="comb" type="range" min="0.4" max="0.9" step="0.01" aria-label="Combined threshold"></label>
+<label class="rng">Single platform share of orders at or above <output id="o2"></output><input id="sing" type="range" min="0.2" max="0.8" step="0.01" aria-label="Single platform threshold"></label></div>
+<div class="g4" id="rk"></div><div id="rseg" class="rseg"></div>
+<div class="lg"><i style="background:#14b8a6"></i>Balanced <i style="background:#818cf8"></i>Tier 1 <i style="background:#f5576c"></i>Tier 2 <i style="background:#ec4899"></i>Both</div>
+<div class="note">The brief's 70% single-platform rule flags nobody. Defaults here (70% combined, 45% single) are this project's calibration.</div></section>
+
+<section id="s7" class="rv"><h2>7. Profit-recovery simulator</h2>
+<div class="g3"><label class="rng">Aggregator orders moved <output id="p1"></output><input id="shift" type="range" min="0" max="50" value="15" aria-label="Share moved"></label>
+<label class="rng">Move them to<select id="tgt"><option>Self-Delivery</option><option>In-Store</option></select></label>
+<label class="rng">Commission cap <output id="p3"></output><input id="cap" type="range" min="0.15" max="0.33" step="0.01" value="0.33" aria-label="Commission cap"></label></div>
+<div class="g3"><div class="kpi"><div class="l">Current monthly profit</div><div class="v" id="r0"></div></div><div class="kpi" style="--accent-g:var(--g-ocean)"><div class="l">Scenario profit</div><div class="v" id="r1"></div></div><div class="kpi" style="--accent-g:var(--g-sunset)"><div class="l">Change</div><div class="v" id="r2"></div><div class="s" id="r3"></div></div></div>
+<div class="note">Illustrative. Each moved order earns the same venue's own profit per order in the new channel; the data cannot show whether customers would switch.</div></section>
+
+<section id="s8" class="rv"><h2>8. Recommendations</h2><ol class="rec"><li><b>Full-service operators:</b> treat app listings as a loss leader to limit, not grow: lower commission, a restricted app menu, and moving repeat customers to Self-Delivery or direct ordering.</li><li><b>Aggregator-heavy cuisines</b> (Chicken Dishes, Japanese, Kebabs/Mediterranean): build self-delivery capacity. Pizza already routes 45% of delivery through its own fleet.</li><li><b>Policy:</b> a commission cap is the largest lever tested, but a 20% cap alone does not make Full-service app orders profitable.</li><li><b>Central Auckland:</b> the case for support rests on its 0.99 growth multiplier; its channel mix and margins match other areas.</li></ol></section>
+<section id="s9" class="rv"><h2>9. Limitations</h2><ul class="chk plain"><li>One monthly snapshot; growth is a scenario.</li><li>All costs are percentages of revenue, so price changes cannot be tested; a menu markup would leave margins unchanged in this model.</li><li>Delivery splits are uniform within a cuisine, which suggests modelled or stratified data. Findings describe this dataset.</li><li>The project plan cites 520 branches; the file holds 1,696. All figures use the file.</li></ul>
+<h3>Definitions</h3><p class="cap">Aggregator dependence = (Uber Eats + DoorDash orders) / MonthlyOrders. In-store reliance = in-store orders / MonthlyOrders. Diversification = 100 x (1 - normalised Herfindahl index over four channel shares). Tier 2 = negative net profit on both platforms.</p></section>
+<footer>Data: SkyCity_Auckland_Restaurants___Bars.csv · Rebuild with <code>python build/build_data.py</code></footer>
+</main></div><script src="js/data.js"></script><script src="js/main.js"></script></body></html>
